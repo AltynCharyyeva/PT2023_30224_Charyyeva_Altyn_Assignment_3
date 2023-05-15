@@ -12,7 +12,15 @@ public class DAOCheck {
     public static void main(String[] args) {
 
 
-     /*   CustomerDAO c = new CustomerDAO();
+
+/*        AbstractDAO dao = new CustomerDAO();
+        Customer customer = (Customer) dao.findById(30, "customerId");
+        System.out.println(customer);*/
+
+        AbstractDAO dao = new CustomerDAO();
+        dao.delete(34, "customerId");
+
+        /*   CustomerDAO c = new CustomerDAO();
         ProductDAO p = new ProductDAO();
         Customer customer = c.findById(13, "customerId");
         System.out.println(customer);
@@ -26,10 +34,10 @@ public class DAOCheck {
         Customer c = new Customer("Charyyeva", "charyyeva@gmail.com", "Mary");
         dao.update(c, 31);*/
 
-        AbstractDAO dao = new ProductDAO();
+/*        AbstractDAO dao = new ProductDAO();
         BigDecimal bd = new BigDecimal("1.50");
         Product product = new Product("Banana", bd, 15);
-        dao.update(product, 2);
+        dao.update(product, 2);*/
 
 /*        AbstractDAO dao = new ProductDAO();
         BigDecimal bd = new BigDecimal("3.99");

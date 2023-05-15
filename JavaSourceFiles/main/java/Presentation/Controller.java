@@ -7,6 +7,7 @@ import Model.Customer;
 import Model.Product;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.ParameterizedType;
@@ -25,6 +26,8 @@ public class Controller {
         this.view.addNewProductBtnListener(new addNewProductBtnListener());
         this.view.addEditClientBtnListener(new editClientBtnListener());
         this.view.addEditProductBttnListener(new editProductBtnListener());
+        this.view.addDeleteBtnActionListener(new deleteClientBtnListener());
+        this.view.addDeleteProductActionListener(new deleteProductBtnListener());
     }
 
      class addNewClientBtnListener implements ActionListener {
@@ -36,6 +39,7 @@ public class Controller {
            AbstractDAO dao = new CustomerDAO();
            dao.insert(customer);
            System.out.println("Done");
+            JOptionPane.showMessageDialog(view.getAddNewClientPanel(), "New client successfully added");
 
         }
 
@@ -52,6 +56,7 @@ public class Controller {
             AbstractDAO dao = new ProductDAO();
             dao.insert(product);
             System.out.println("Done");
+            JOptionPane.showMessageDialog(view.getAddNewProductPanel(), "New product successfully added");
         }
 
     }
@@ -67,6 +72,7 @@ public class Controller {
             AbstractDAO dao = new CustomerDAO();
             dao.update(customer, id);
             System.out.println("Done");
+            JOptionPane.showMessageDialog(view.getEditClientPanel(), "Client information successfully updated");
 
         }
 
@@ -84,6 +90,7 @@ public class Controller {
             Product product = new Product(productName, price, quantity);
             AbstractDAO dao = new ProductDAO();
             dao.update(product, id);
+            JOptionPane.showMessageDialog(view.getEditProductPanel(), "Product information successfully updated");
         }
     }
 
@@ -91,11 +98,13 @@ public class Controller {
         public void actionPerformed(ActionEvent e){
             JScrollPane scrollPane = view.getClientScrollPane();
             AbstractDAO dao = new CustomerDAO();
-            JTable table = new JTable(dao.getTableUsingReflecton(dao.findAll()));
+            JTable table = new JTable(dao.getTable(dao.findAll()));
             table.getColumnModel().getColumn(0).setPreferredWidth(3);
             table.getColumnModel().getColumn(1).setPreferredWidth(20);
             table.getColumnModel().getColumn(2).setPreferredWidth(50);
             table.getColumnModel().getColumn(3).setPreferredWidth(35);
+            table.setPreferredScrollableViewportSize(new Dimension(300, 80));
+            table.setFillsViewportHeight(true);
             scrollPane.getViewport().add(table);
         }
     }
@@ -104,7 +113,7 @@ public class Controller {
         public void actionPerformed(ActionEvent e){
             JScrollPane scrollPane = view.getProductScrollPane();
             AbstractDAO dao = new ProductDAO();
-            JTable table = new JTable(dao.getTableUsingReflecton(dao.findAll()));
+            JTable table = new JTable(dao.getTable(dao.findAll()));
             table.getColumnModel().getColumn(0).setPreferredWidth(3);
             table.getColumnModel().getColumn(1).setPreferredWidth(20);
             table.getColumnModel().getColumn(2).setPreferredWidth(10);
@@ -126,6 +135,24 @@ public class Controller {
             }else{
                 JOptionPane.showMessageDialog(view.getCreateOrderPanel(), "Product quantity is under 0!");
             }
+        }
+    }
+
+    class deleteClientBtnListener implements ActionListener{
+        public void actionPerformed(ActionEvent e){
+            String id = view.getDeleteClientId();
+            int clientId = Integer.parseInt(id);
+            AbstractDAO dao = new CustomerDAO();
+            dao.delete(clientId, "customerId");
+        }
+    }
+
+    class deleteProductBtnListener implements ActionListener{
+        public void actionPerformed(ActionEvent e){
+            String id = view.getDeleteProductId();
+            int productId = Integer.parseInt(id);
+            AbstractDAO dao = new ProductDAO();
+            dao.delete(productId, "productId");
         }
     }
 

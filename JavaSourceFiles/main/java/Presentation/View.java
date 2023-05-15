@@ -163,10 +163,10 @@ public class View{
                 clientOperationsPanel.setVisible(false);
                 productOperationsPanel.setVisible(false);
                 createOrderPanel.setVisible(false);
-                //addNewClientPanel.setVisible(false);
-                //editClientPanel.setVisible(false);
-                //deleteClientPanel.setVisible(false);
-                //viewClientsPanel.setVisible(false);
+                addNewClientPanel.setVisible(false);
+                editClientPanel.setVisible(false);
+                deleteClientPanel.setVisible(false);
+                viewClientsPanel.setVisible(false);
             }
         });
 
@@ -197,10 +197,10 @@ public class View{
                 clientOperationsPanel.setVisible(true);
                 productOperationsPanel.setVisible(false);
                 createOrderPanel.setVisible(false);
-                //addNewClientPanel.setVisible(false);
-                //editClientPanel.setVisible(false);
-                //deleteClientPanel.setVisible(false);
-                //viewClientsPanel.setVisible(false);
+                addNewClientPanel.setVisible(false);
+                editClientPanel.setVisible(false);
+                deleteClientPanel.setVisible(false);
+                viewClientsPanel.setVisible(false);
             }
         });
 
@@ -230,10 +230,10 @@ public class View{
                 productOperationsPanel.setVisible(true);
                 clientOperationsPanel.setVisible(false);
                 createOrderPanel.setVisible(false);
-                //addNewClientPanel.setVisible(false);
-                //editClientPanel.setVisible(false);
-                //deleteClientPanel.setVisible(false);
-                //viewClientsPanel.setVisible(false);
+                addNewClientPanel.setVisible(false);
+                editClientPanel.setVisible(false);
+                deleteClientPanel.setVisible(false);
+                viewClientsPanel.setVisible(false);
             }
         });
 
@@ -263,10 +263,10 @@ public class View{
                 createOrderPanel.setVisible(true);
                 productOperationsPanel.setVisible(false);
                 clientOperationsPanel.setVisible(false);
-                //addNewClientPanel.setVisible(false);
-                //editClientPanel.setVisible(false);
-                //deleteClientPanel.setVisible(false);
-                //viewClientsPanel.setVisible(false);
+                addNewClientPanel.setVisible(false);
+                editClientPanel.setVisible(false);
+                deleteClientPanel.setVisible(false);
+                viewClientsPanel.setVisible(false);
             }
         });
 
@@ -513,7 +513,7 @@ public class View{
         });
 
         viewClientsPanel.setBackground(new Color(200, 160, 200));
-        viewClientsPanel.setBounds(290, 90, 650, 450);
+        viewClientsPanel.setBounds(290, 70, 650, 400);
         viewClientsPanel.setLayout(null);
         viewClientsPanel.setVisible(false);
 
@@ -521,12 +521,10 @@ public class View{
 
         viewClientsLabel.setForeground(new Color(100, 32, 240));
         viewClientsLabel.setFont(new Font("Calibri", Font.PLAIN, 17));
-        viewClientsLabel.setBounds(20, 5, 250, 35);
+        viewClientsLabel.setBounds(10, 5, 250, 35);
 
-        clientScrollPane.setBounds(30, 30, 620, 440);
+        clientScrollPane.setBounds(25, 30, 620, 360);
         clientScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-/*        scrollPane.getViewport().add(AbstractDAO.getTable());
-        AbstractDAO.getTable().setFillsViewportHeight(true);*/
 
 
 
@@ -736,7 +734,7 @@ public class View{
         });
 
         viewProductsPanel.setBackground(new Color(200, 160, 200));
-        viewProductsPanel.setBounds(310, 90, 650, 450);
+        viewProductsPanel.setBounds(310, 90, 650, 400);
         viewProductsPanel.setLayout(null);
         viewProductsPanel.setVisible(false);
 
@@ -744,7 +742,7 @@ public class View{
         viewProductsLabel.setFont(new Font("Calibri", Font.PLAIN, 17));
         viewProductsLabel.setBounds(20, 5, 250, 35);
 
-        productScrollPane.setBounds(30, 30, 620, 440);
+        productScrollPane.setBounds(30, 30, 620, 360);
         productScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
         viewProductsPanel.add(viewProductsLabel);
@@ -934,6 +932,36 @@ public class View{
     public JPanel getCreateOrderPanel(){
         return createOrderPanel;
     }
+    public JPanel getAddNewClientPanel(){
+        return addNewClientPanel;
+    }
+    public JPanel getEditClientPanel(){
+        return editClientPanel;
+    }
+    public JPanel getAddNewProductPanel(){
+        return addNewProductPanel;
+    }
+
+    public JPanel getEditProductPanel(){
+        return editProductPanel;
+    }
+
+    public String getDeleteClientId(){
+        return deleteClient.getText();
+    }
+
+    public void addDeleteBtnActionListener(ActionListener deleteAction){
+        deleteBtn.addActionListener(deleteAction);
+    }
+
+    public void addDeleteProductActionListener(ActionListener deleteProduct){
+        deleteProductPBtn.addActionListener(deleteProduct);
+    }
+
+    public String getDeleteProductId(){
+        return deleteProduct.getText();
+    }
+
 
 
 

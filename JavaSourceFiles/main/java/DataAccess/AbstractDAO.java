@@ -1,3 +1,7 @@
+/**
+ * This class gets the data from the database contains basic CRUD methods that can be used(generally by any class
+ * that extends this class) to create, read/find, update and delete the data in the database.
+ */
 package DataAccess;
 
 import Connection.ConnectionFactory;
@@ -30,39 +34,10 @@ public class AbstractDAO <T> {
 
     }
 
-    public String createSelectQuery(String field) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("SELECT ");
-        sb.append(" * ");
-        sb.append(" FROM ");
-        sb.append(this.getType().getSimpleName());
-        sb.append(" WHERE " + field + " = ?");
-        return sb.toString();
-    }
-
-    public T findById(int id, String entityId) {
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet rs = null;
-
-        String query = createSelectQuery(entityId);
-        try {
-            connection = ConnectionFactory.getConnection();
-            statement = connection.prepareStatement(query);
-            statement.setInt(1, id);
-            rs = statement.executeQuery();
-
-            return createObjects(rs).get(0);
-        } catch (SQLException e) {
-            LOGGER.log(Level.WARNING, this.getType().getName() + "DAO:findById " + e.getMessage());
-        } finally {
-            ConnectionFactory.close(rs);
-            ConnectionFactory.close(statement);
-            ConnectionFactory.close(connection);
-        }
-        return null;
-    }
-
+    /**
+     * createSelectAllQuery() method creates a general query string for selecting all the fields from a certain table.
+     * @return
+     */
     public String createSelectAllQuery() {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT ");
@@ -72,6 +47,11 @@ public class AbstractDAO <T> {
         return sb.toString();
     }
 
+    /**
+     * The findAll() method gets a connection with the database, gets the data and return the obtained data as a List of
+     * objects. List<T> means that the type will be defined in the runtime.
+     * @return
+     */
     public List<T> findAll() {
         Connection connection = null;
         PreparedStatement stmt = null;
@@ -95,11 +75,17 @@ public class AbstractDAO <T> {
         return null;
     }
 
+    /**
+     *
+     * @param resultSet
+     * createObjects() method receives a ResultSet as a parameter and gets the fields from using reflection techniques.
+     * First the fieldNames then the values of that fields are obtained. The values are put in a List and returned.
+     * @return
+     */
     public List<T> createObjects(ResultSet resultSet) {
         List<T> list = new ArrayList<T>();
         Constructor[] ctors = this.getType().getDeclaredConstructors();
         Constructor ctor = null;
-        System.out.println("Constructor length: " + ctors.length);
         for (int i = 0; i < ctors.length; i++) {
             ctor = ctors[i];
             if (ctor.getGenericParameterTypes().length == 0)
@@ -133,11 +119,18 @@ public class AbstractDAO <T> {
         } catch (IntrospectionException e) {
             e.printStackTrace();
         }
-        //System.out.println(list);
         return list;
     }
 
-    public DefaultTableModel getTableUsingReflecton(List<T> list) {
+    /**
+     *
+     * @param list
+     * getTable() method gets as a parameter List of objects constructs the table header using the fields of the first
+     * element and populates the table with the data in the List. All is done with the hepl of reflection techniques.
+     * The table is returned as DefaultTableModel type.
+     * @return
+     */
+    public DefaultTableModel getTable(List<T> list) {
         Vector<String> columnNames = new Vector<String>(); // TableHeader
         Vector<Vector<Object>> data = new Vector<Vector<Object>>(); // TableData
         Object object = list.get(0);
@@ -149,7 +142,6 @@ public class AbstractDAO <T> {
                 e.printStackTrace();
             }
         }
-        System.out.println("List length" + list.size());
         ListIterator<T> iter = list.listIterator();
         while (iter.hasNext()) {
             Vector<Object> vector = new Vector<Object>();
@@ -168,11 +160,17 @@ public class AbstractDAO <T> {
             }
             data.add(vector);
         }
-        System.out.println("Successfully completed");
         return new DefaultTableModel(data, columnNames);
     }
 
-    public boolean checkProductQuantity(String productName) {
+    /**
+     *
+     * @param productName
+     * checkProductQuantity() method gets the products name and checks the product quantity in the database and returns
+     * the quantity of the product.
+     * @return
+     */
+    public int checkProductQuantity(String productName) {
         Connection connection = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -187,18 +185,22 @@ public class AbstractDAO <T> {
             rs.next();
 
             int quantity = rs.getInt("quantityInStock");
-            if (quantity > 0) {
-                System.out.println("Quantity: " + quantity);
-                return true;
-            } else {
-                return false;
-            }
+            return quantity;
         } catch (SQLException e) {
             LOGGER.log(Level.WARNING, e.getMessage());
         }
-        return false;
+        return 0;
     }
 
+    /**
+     *
+     * @param clientName
+     * @param productName
+     * @param quantity
+     * makeOrder() method gets a connection with the database and executes a procedure in the database. The procedure
+     * updates the Orders and OrderedProduct tables in the database and decrements the quantity of the product.
+     * @return
+     */
     public boolean makeOrder(String clientName, String productName, int quantity) {
         Connection connection = null;
         CallableStatement stmt = null;
@@ -212,7 +214,7 @@ public class AbstractDAO <T> {
             stmt.setString(2, productName);
             stmt.setInt(3, quantity);
 
-            if (checkProductQuantity(productName)) {
+            if (checkProductQuantity(productName)-quantity>=0) {
                 rs = stmt.executeQuery();
                 return true;
             }
@@ -226,6 +228,14 @@ public class AbstractDAO <T> {
         return false;
     }
 
+    /**
+     *
+     * @param field1
+     * @param field2
+     * @param field3
+     * createInsertQuery() method generates a general SQL query for insertion in the database.
+     * @return
+     */
     public String createInsertQuery(String field1, String field2, String field3) {
         StringBuilder sb = new StringBuilder();
         sb.append("INSERT INTO ");
@@ -235,6 +245,12 @@ public class AbstractDAO <T> {
         return sb.toString();
     }
 
+    /**
+     *
+     * @param t
+     * inset() method gets the connection with the database and executes the insertion in the database
+     * @return
+     */
     public T insert(T t) {
         Connection connection = null;
         PreparedStatement stmt = null;
@@ -286,6 +302,17 @@ public class AbstractDAO <T> {
         return t;
     }
 
+    /**
+     *
+     * @param field1
+     * @param entityId
+     * @param field2
+     * @param field3
+     * @param field4
+     * createUpdateQuery() method generates a general SQL update query.
+     * @return
+     */
+
     public String createUpdateQuery(String field1, int entityId, String field2, String field3, String field4) {
         StringBuilder sb = new StringBuilder();
         sb.append("UPDATE ");
@@ -297,6 +324,14 @@ public class AbstractDAO <T> {
         return sb.toString();
 
     }
+
+    /**
+     *
+     * @param t
+     * @param idValue
+     * update() method gets the connection with the database and executes an update in the database.
+     * @return
+     */
 
     public T update(T t, int idValue) {
         Connection connection = null;
@@ -343,7 +378,47 @@ public class AbstractDAO <T> {
             }
             return t;
     }
-    public void delete(T t, int entityId){
+
+    /**
+     *
+     * @param field
+     * createDelete() method creates a general SQL delete query.
+     * @return
+     */
+
+    public String createDeleteQuery(String field){
+        StringBuilder sb = new StringBuilder();
+        sb.append("DELETE FROM ");
+        sb.append(type.getSimpleName());
+        sb.append(" WHERE ");
+        sb.append(field+" = ?");
+        return sb.toString();
+    }
+
+    /**
+     *
+     * @param id
+     * @param entityId
+     * delete() method gets a connection with the database and executes a deletion in the database.
+     */
+    public void delete(int id, String entityId){
+        Connection connection = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        String query = createDeleteQuery(entityId);
+        try {
+            connection = ConnectionFactory.getConnection();
+            stmt = connection.prepareStatement(query);
+            stmt.setInt(1, id);
+            int rowsAffected = stmt.executeUpdate();
+        } catch (SQLException e) {
+            LOGGER.log(Level.WARNING, this.getType().getName() + "DAO:delete " + e.getMessage());
+        } finally {
+            ConnectionFactory.close(rs);
+            ConnectionFactory.close(stmt);
+            ConnectionFactory.close(connection);
+        }
 
     }
 }
